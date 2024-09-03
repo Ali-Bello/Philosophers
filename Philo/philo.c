@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 04:53:07 by aderraj           #+#    #+#             */
-/*   Updated: 2024/08/28 03:50:19 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/01 09:58:48 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int init_objects(t_info *info)
         memset(&info->philos[i], 0, sizeof(t_philo));
         info->philos[i].info = info;
         info->philos[i].philo_no = i + 1;
+        if (pthread_mutex_init(&info->philos[i].status_mutex, NULL))
+            return (ft_clean(info), 1);
         if (pthread_mutex_init(&info->forks[i], NULL))
             return (ft_clean(info), 1);
         i++;
@@ -58,18 +60,12 @@ void    *activity(void *arg)
     t_philo *philo;
 
     philo = (t_philo *)arg;
-    pthread_mutex_lock(&philo->info->time_mutex);
-    while (!philo->info->death_flag)
+    while (1)
     {
-        long time = get_timestamp() - philo->info->start_time;
-        printf("%ldms philo %d is thinking %d\n", time, philo->philo_no, philo->status);
-        if (time > philo->info->time_to_eat)
-        {
-            philo->info->death_flag = 1;
-            printf("%ldms philo %d is dead\n", time, philo->philo_no);
-        }   
+        think(philo);
+        eat(philo);
+        philo_sleep(philo);
     }
-    pthread_mutex_unlock(&philo->info->time_mutex);
     return (NULL);
 }
 
@@ -83,10 +79,10 @@ int main(int ac, char **av)
         return (0);
     if (init_objects(&info))
         return (0);
-    info.start_time = get_timestamp();
     i = 0;
     while (i < info.num_of_philos)
     {
+        info.start_time = get_timestamp();
         if (pthread_create(&info.philos[i].ptid, NULL,\
             activity, &info.philos[i]))
             return (ft_clean(&info), 0);

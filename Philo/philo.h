@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 02:25:58 by aderraj           #+#    #+#             */
-/*   Updated: 2024/08/28 02:43:39 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/01 07:06:59 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,12 @@ typedef struct t_info
     pthread_mutex_t	time_mutex;
 } t_info;
 
+typedef struct t_fork
+{
+    int state;
+    pthread_mutex_t mutex;
+} t_fork;
+
 typedef enum e_status
 {
     EATING,
@@ -52,12 +58,15 @@ typedef struct t_philo
     pthread_t   ptid;
     int         philo_no;
     int         meal_no;
-    long		time_counter;
     long		last_meal;
+    pthread_mutex_t status_mutex;
     e_status status;
 } t_philo;
 
 
-int check_input(int ac, char **av, t_info *info);
-
+int     check_input(int ac, char **av, t_info *info);
+void    eat(t_philo *philo);
+void    philo_sleep(t_philo *philo);
+void    think(t_philo *philo);
+long    get_timestamp();
 #endif

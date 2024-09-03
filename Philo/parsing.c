@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 10:28:06 by aderraj           #+#    #+#             */
-/*   Updated: 2024/08/25 10:32:49 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/01 02:11:04 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int check_digit(char *str)
         if (str[i] != '+' && !(str[i] >= '0' && str[i] <= '9')
             && !(str[i] >= 9 && str[i] <= 13) && str[i] != ' ')
             return (0);
-
         i++;
     }
     return (1);
@@ -76,7 +75,7 @@ int check_input(int ac, char **av, t_info *info)
     i = 1;
     while (av[i] && check_digit(av[i]))
         i++;
-    if (i < 5)
+    if (i < 5 || (ac == 6 && i < 6))
         return (1);
     return (check_values(info, av));
 }
