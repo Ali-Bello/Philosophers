@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 04:53:07 by aderraj           #+#    #+#             */
-/*   Updated: 2024/09/01 09:58:48 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/04 14:02:04 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ int init_objects(t_info *info)
     {
         memset(&info->philos[i], 0, sizeof(t_philo));
         info->philos[i].info = info;
-        info->philos[i].philo_no = i + 1;
-        if (pthread_mutex_init(&info->philos[i].status_mutex, NULL))
-            return (ft_clean(info), 1);
+        info->philos[i].id = i + 1;
+        info->philos[i].r_fork = &info->forks[i];
+        info->philos[i].l_fork = &info->forks[(i + 1) % info->num_of_philos];
         if (pthread_mutex_init(&info->forks[i], NULL))
             return (ft_clean(info), 1);
         i++;
