@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 04:53:07 by aderraj           #+#    #+#             */
-/*   Updated: 2024/09/04 14:02:04 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/04 14:26:44 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void    *activity(void *arg)
     philo = (t_philo *)arg;
     while (1)
     {
-        think(philo);
         eat(philo);
         philo_sleep(philo);
     }
