@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 04:53:07 by aderraj           #+#    #+#             */
-/*   Updated: 2024/09/04 14:26:44 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/05 14:51:59 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int init_objects(t_info *info)
     info->philos = malloc(sizeof(t_philo) * info->num_of_philos);
     if (!info->philos)
         return (1);
-    info->forks = malloc(sizeof(pthread_mutex_t) * info->num_of_philos);
+    info->forks = malloc(sizeof(t_fork) * info->num_of_philos);
     if (!info->forks)
         return (ft_clean(info), 1);
     i = 0;
@@ -44,14 +44,12 @@ int init_objects(t_info *info)
         memset(&info->philos[i], 0, sizeof(t_philo));
         info->philos[i].info = info;
         info->philos[i].id = i + 1;
-        info->philos[i].r_fork = &info->forks[i];
-        info->philos[i].l_fork = &info->forks[(i + 1) % info->num_of_philos];
-        if (pthread_mutex_init(&info->forks[i], NULL))
+        info->philos[i].fork = &info->forks[i];
+        info->forks[i].status = 0;
+        if (pthread_mutex_init(&info->forks[i].mtx, NULL))
             return (ft_clean(info), 1);
         i++;
     }
-    if (pthread_mutex_init(&info->time_mutex, NULL))
-        return (ft_clean(info), 1);
     return (0);
 }
 
@@ -62,6 +60,7 @@ void    *activity(void *arg)
     philo = (t_philo *)arg;
     while (1)
     {
+        think(philo);
         eat(philo);
         philo_sleep(philo);
     }

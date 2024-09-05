@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 02:25:58 by aderraj           #+#    #+#             */
-/*   Updated: 2024/09/04 13:44:41 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/05 14:51:36 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,29 +25,33 @@
 
 typedef struct t_info
 {
-    int				simulation_flag;
     int				num_of_philos;
     int				time_to_die;
     int				time_to_eat;
     int				time_to_sleep;
     int				num_of_meals;
+    int				simul_flag;
     int				death_flag;
-    long    		start_time;
-    long    		timestamp;
+    size_t    		start_time;
+    size_t    		timestamp;
     struct t_philo	*philos;
-    pthread_mutex_t	*forks;
-    pthread_mutex_t	time_mutex;
+    struct t_fork	*forks;
 } t_info;
+
+typedef struct t_fork
+{
+    pthread_mutex_t mtx;
+    int				status;    
+} t_fork;
 
 typedef struct t_philo
 {
     t_info      *info;
+    t_fork		*fork;
+    pthread_t   ptid;
     int         id;
     int         meals_eaten;
-    size_t		last_meal;
-    pthread_t   ptid;
-    pthread_mutex_t *r_fork;
-    pthread_mutex_t *l_fork;
+    size_t		last_meal_time;
 } t_philo;
 
 
