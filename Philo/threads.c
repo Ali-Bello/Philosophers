@@ -6,53 +6,56 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 22:05:33 by aderraj           #+#    #+#             */
-/*   Updated: 2024/09/06 17:42:34 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/14 03:03:44 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void ft_usleep(size_t usec)
+{
+    size_t  start;
+
+    start  = get_timestamp();
+    while ((get_timestamp() - start) < usec)
+     usleep(649);
+}
 void    philo_sleep(t_philo *philo)
 {
-    if (!philo->fork.status)
-        return ;
-    philo->fork.status = 0;
-    philo->neighboor->fork.status = 0;
     printf("%ld %d is sleeping\n",get_timestamp() - philo->info->start_time, philo->id);
-    usleep(philo->info->time_to_sleep * 1000);
+    ft_usleep(philo->info->time_to_sleep);
 }
 
-void   eat(t_philo *philo)
+void    pickup_forks(t_philo *philo)
 {
-    pthread_mutex_lock(&philo->info->status_mtx);
-    if (!philo->fork.status && !philo->neighboor->fork.status)
+    if (philo->id != philo->info->num_of_philos)
     {
-        pthread_mutex_unlock(&philo->info->status_mtx);
-        pthread_mutex_lock(&philo->fork.mtx);
-        pthread_mutex_lock(&philo->neighboor->fork.mtx);
-        philo->fork.status = 1;
-        philo->neighboor->fork.status = 1;
+        pthread_mutex_lock(&philo->info->forks[philo->id - 1]);
         printf("%ld %d has taken a fork\n",get_timestamp() - philo->info->start_time, philo->id);
-        printf("%ld %d has taken a fork\n",get_timestamp() - philo->info->start_time, philo->id);
-        printf("%ld %d is eating\n",get_timestamp() - philo->info->start_time, philo->id);
-        philo->last_meal_time = get_timestamp() - philo->info->start_time;
-        usleep(philo->info->time_to_eat * 1000);
-        pthread_mutex_unlock(&philo->neighboor->fork.mtx);
-        pthread_mutex_unlock(&philo->fork.mtx);
+        pthread_mutex_lock(&philo->info->forks[philo->id % philo->info->num_of_philos]);
+        printf("%ld %d has taken a fork\n",get_timestamp() - philo->info->start_time, philo->id);   
     }
     else
     {
-        pthread_mutex_unlock(&philo->info->status_mtx);
-        think(philo);
-        while (philo->fork.status || philo->neighboor->fork.status)
-            ;
+        pthread_mutex_lock(&philo->info->forks[philo->id % philo->info->num_of_philos]);
+        printf("%ld %d has taken a fork\n",get_timestamp() - philo->info->start_time, philo->id);
+        pthread_mutex_lock(&philo->info->forks[philo->id - 1]);
+        printf("%ld %d has taken a fork\n",get_timestamp() - philo->info->start_time, philo->id);
     }
+}
+
+void    eat(t_philo *philo)
+{
+    pickup_forks(philo);
+    printf("%ld %d is eating\n",get_timestamp() - philo->info->start_time, philo->id);
+    ft_usleep(philo->info->time_to_eat);
+    pthread_mutex_unlock(&philo->info->forks[philo->id - 1]);
+    pthread_mutex_unlock(&philo->info->forks[philo->id % philo->info->num_of_philos]);
 }
 
 void    think(t_philo *philo)
 {
     printf("%ld %d is thinking\n",get_timestamp() - philo->info->start_time, philo->id);
-    usleep(10);
 }
 
 void    azrael(t_info *info)
