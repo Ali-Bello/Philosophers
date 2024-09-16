@@ -6,7 +6,7 @@
 /*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 02:25:58 by aderraj           #+#    #+#             */
-/*   Updated: 2024/09/06 17:35:18 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/09/14 21:55:38 by aderraj          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,23 +41,15 @@ typedef struct t_info
     int				num_of_meals;
     int				simul_flag;
     size_t    		start_time;
-    size_t    		timestamp;
     struct t_philo  *philos;
+    pthread_mutex_t *forks;
     pthread_mutex_t status_mtx;
     pthread_mutex_t simul_mtx;
 } t_info;
 
-typedef struct t_fork
-{
-    pthread_mutex_t mtx;
-    atomic_int				status;
-} t_fork;
-
 typedef struct t_philo
 {
     t_info      *info;
-    struct t_philo *neighboor;
-    t_fork		fork;
     pthread_t   ptid;
     int         id;
     int         meals_eaten;
@@ -69,6 +61,7 @@ int     check_input(int ac, char **av, t_info *info);
 void    eat(t_philo *philo);
 void    philo_sleep(t_philo *philo);
 void    think(t_philo *philo);
-long    get_timestamp();
-void    azrael(t_info *info);
+size_t   get_timestamp();
+void    monitor(t_info *info);
+
 #endif
