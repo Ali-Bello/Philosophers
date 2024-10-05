@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aderraj <aderraj@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 02:25:58 by aderraj           #+#    #+#             */
-/*   Updated: 2024/09/14 21:55:38 by aderraj          ###   ########.fr       */
+/*   Updated: 2024/10/05 03:52:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,11 @@ typedef struct t_info
     int				time_to_sleep;
     int				num_of_meals;
     int				simul_flag;
+    int             meals_flag;
     size_t    		start_time;
     struct t_philo  *philos;
     pthread_mutex_t *forks;
-    pthread_mutex_t status_mtx;
+    pthread_mutex_t meals_mtx;
     pthread_mutex_t simul_mtx;
 } t_info;
 
@@ -54,6 +55,8 @@ typedef struct t_philo
     int         id;
     int         meals_eaten;
     size_t		last_meal_time;
+    pthread_mutex_t meals_mtx;
+    pthread_mutex_t time_mtx;
 } t_philo;
 
 
@@ -63,5 +66,6 @@ void    philo_sleep(t_philo *philo);
 void    think(t_philo *philo);
 size_t   get_timestamp();
 void    monitor(t_info *info);
-
+void    print_logs(size_t start_time, int id, char *s);
+void    ft_usleep(size_t usec);
 #endif
