@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 02:56:02 by marvin            #+#    #+#             */
-/*   Updated: 2024/10/05 04:25:08 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/06 22:02:48 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	*activity(void *arg)
 		eat(philo);
 		philo_sleep(philo);
 		print_logs(philo->info->start_time, philo->id, "is thinking");
+		usleep(5);
 	}
 	return (NULL);
 }
@@ -98,7 +99,6 @@ void	monitor(t_info *info)
 			pthread_mutex_unlock(&info->philos[i].time_mtx);
 			i++;
 		}
-			printf("num of meals = %d, meals flag = %d\n", info->num_of_meals, info->meals_flag);
 		pthread_mutex_lock(&info->meals_mtx);
 		if (info->num_of_meals && info->meals_flag >= info->num_of_meals)
 		{
@@ -110,7 +110,7 @@ void	monitor(t_info *info)
 		pthread_mutex_unlock(&info->meals_mtx);
 		if (flag)
 			break;
-		ft_usleep(info->time_to_eat);
+		usleep(1000);
 	}
 }
 

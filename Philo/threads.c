@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 03:08:33 by marvin            #+#    #+#             */
-/*   Updated: 2024/10/05 04:24:02 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/06 22:05:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void    pickup_forks(t_philo *philo)
 
     f1 = &philo->info->forks[philo->id - 1];
     f2 = &philo->info->forks[philo->id % philo->info->num_of_philos];
-    if (philo->id % 2)
+    if (philo->id == philo->info->num_of_philos)
     {
         f1 = &philo->info->forks[philo->id % philo->info->num_of_philos];
         f2 = &philo->info->forks[philo->id - 1];
@@ -49,7 +49,7 @@ void    pickup_forks(t_philo *philo)
 
 void    release_forks(t_philo *philo)
 {
-    if (philo->id % 2 == 0)
+    if (philo->id == philo->info->num_of_philos)
     {
         pthread_mutex_unlock(&philo->info->forks[philo->id % philo->info->num_of_philos]);
         pthread_mutex_unlock(&philo->info->forks[philo->id - 1]);
