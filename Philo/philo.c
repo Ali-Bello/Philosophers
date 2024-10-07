@@ -63,7 +63,7 @@ void	*activity(void *arg)
         if (philo->info->num_of_meals)
         {
 		    pthread_mutex_lock(&philo->meals_mtx);
-		    if (philo->info->num_of_meals && philo->meals_eaten >= philo->info->num_of_meals)
+		    if (philo->info->num_of_meals && philo->meals_eaten > philo->info->num_of_meals)
 		    {
 			    pthread_mutex_lock(&philo->info->simul_mtx);
 			    philo->info->simul_flag = 1;
@@ -71,12 +71,12 @@ void	*activity(void *arg)
 		    	pthread_mutex_unlock(&philo->meals_mtx);
 			    break ;
 		    }
+		    pthread_mutex_unlock(&philo->meals_mtx);
         }
-		pthread_mutex_unlock(&philo->meals_mtx);
 		eat(philo);
 		philo_sleep(philo);
 		print_logs(philo->info->start_time, philo->id, "is thinking");
-		// usleep(15);
+		ft_usleep(1);
 	}
 	return (NULL);
 }
