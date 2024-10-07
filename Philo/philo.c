@@ -21,7 +21,7 @@ void    ft_clean(t_info *info)
     memset(info, 0, sizeof(t_info));
 }
 
-size_t    get_timestamp()
+time_t    get_timestamp()
 {
     struct timeval time;
 
@@ -70,35 +70,44 @@ void	*activity(void *arg)
 		eat(philo);
 		philo_sleep(philo);
 		print_logs(philo->info->start_time, philo->id, "is thinking");
-		usleep(5);
+		usleep(15);
 	}
 	return (NULL);
 }
 
-void	monitor(t_info *info)
+
+int	check_death(t_info *info)
 {
 	int	i;
+
+	i = 0;
+	while (i < info->num_of_philos)
+	{
+		pthread_mutex_lock(&info->philos[i].time_mtx);
+		if (get_timestamp() - info->philos[i].last_meal_time > info->time_to_die)
+		{
+			pthread_mutex_lock(&info->simul_mtx);
+			info->simul_flag = 1;
+			pthread_mutex_unlock(&info->simul_mtx);
+			print_logs(info->start_time, i + 1, RED"died"RESET);
+			pthread_mutex_unlock(&info->philos[i].time_mtx);
+			return (1);
+		}
+		pthread_mutex_unlock(&info->philos[i].time_mtx);
+		i++;
+	}
+	return (0);
+}
+
+void	monitor(t_info *info)
+{
 	int	flag;
 
 	flag = 0;
 	while (1)
 	{
-		i = 0;
-		while (i < info->num_of_philos)
-		{
-			pthread_mutex_lock(&info->philos[i].time_mtx);
-			if (info->philos[i].last_meal_time &&
-				get_timestamp() - info->philos[i].last_meal_time >= (size_t)info->time_to_die)
-			{
-				pthread_mutex_lock(&info->simul_mtx);
-				info->simul_flag = 1;
-				flag = 1;
-				print_logs(info->start_time, i + 1, "died");
-				pthread_mutex_unlock(&info->simul_mtx);
-			}
-			pthread_mutex_unlock(&info->philos[i].time_mtx);
-			i++;
-		}
+		if (check_death(info))
+			break;
 		pthread_mutex_lock(&info->meals_mtx);
 		if (info->num_of_meals && info->meals_flag >= info->num_of_meals)
 		{
@@ -114,6 +123,7 @@ void	monitor(t_info *info)
 	}
 }
 
+
 int main(int ac, char **av)
 {
     t_info  info;
@@ -126,12 +136,16 @@ int main(int ac, char **av)
 	i = 0;
 	while (i < info.num_of_philos)
 	{
+        pthread_mutex_lock(&info.philos[i].time_mtx);
+        info.philos[i].last_meal_time = info.start_time;
+        pthread_mutex_unlock(&info.philos[i].time_mtx);
 		if (pthread_create(&info.philos[i].ptid, NULL,\
             activity, &info.philos[i]))
         	return (ft_clean(&info), 0);
+		usleep(50);
 		i++;
 	}
-	monitor(&info);
+    monitor(&info);
 	i = 0;
 	while (i < info.num_of_philos)
         pthread_join(info.philos[i++].ptid, NULL);

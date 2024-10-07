@@ -33,13 +33,21 @@ void    pickup_forks(t_philo *philo)
 
     f1 = &philo->info->forks[philo->id - 1];
     f2 = &philo->info->forks[philo->id % philo->info->num_of_philos];
-    if (philo->id == philo->info->num_of_philos)
+    if (philo->id % 2)
     {
         f1 = &philo->info->forks[philo->id % philo->info->num_of_philos];
         f2 = &philo->info->forks[philo->id - 1];
     }
     pthread_mutex_lock(f1);
     print_logs(philo->info->start_time, philo->id, "has taken a fork");
+    pthread_mutex_lock(&philo->info->simul_mtx);
+    if (philo->info->simul_flag)
+    {
+        pthread_mutex_unlock(f1);
+        pthread_mutex_unlock(&philo->info->simul_mtx);
+        return ;
+    }
+    pthread_mutex_unlock(&philo->info->simul_mtx);
     pthread_mutex_lock(f2);
     print_logs(philo->info->start_time, philo->id, "has taken a fork");
     pthread_mutex_lock(&philo->time_mtx);
@@ -49,15 +57,15 @@ void    pickup_forks(t_philo *philo)
 
 void    release_forks(t_philo *philo)
 {
-    if (philo->id == philo->info->num_of_philos)
+    if (philo->id % 2)
     {
-        pthread_mutex_unlock(&philo->info->forks[philo->id % philo->info->num_of_philos]);
         pthread_mutex_unlock(&philo->info->forks[philo->id - 1]);
+        pthread_mutex_unlock(&philo->info->forks[philo->id % philo->info->num_of_philos]);
     }
     else
     {
-        pthread_mutex_unlock(&philo->info->forks[philo->id - 1]);   
         pthread_mutex_unlock(&philo->info->forks[philo->id % philo->info->num_of_philos]);
+        pthread_mutex_unlock(&philo->info->forks[philo->id - 1]);
     }
 }
 
@@ -65,14 +73,22 @@ void    eat(t_philo *philo)
 {
     pickup_forks(philo);
     print_logs(philo->info->start_time, philo->id, "is eating");
+    pthread_mutex_lock(&philo->info->simul_mtx);
     ft_usleep(philo->info->time_to_eat);
+    if (philo->info->simul_flag)
+    {
+        release_forks(philo);
+        pthread_mutex_unlock(&philo->info->simul_mtx);
+        return ;
+    }
+    pthread_mutex_unlock(&philo->info->simul_mtx);
     pthread_mutex_lock(&philo->meals_mtx);
     philo->meals_eaten++;
     if (philo->info->num_of_meals && philo->meals_eaten == philo->info->num_of_meals)
     {
         pthread_mutex_lock(&philo->info->meals_mtx);
         philo->info->meals_flag++;
-        printf(BOLD RED"%dhere\n"RESET, philo->info->meals_flag);
+        // printf(BOLD RED"%dhere\n"RESET, philo->info->meals_flag);
         pthread_mutex_unlock(&philo->info->meals_mtx);
     }
     pthread_mutex_unlock(&philo->meals_mtx);

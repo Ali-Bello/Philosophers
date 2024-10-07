@@ -35,13 +35,13 @@
 typedef struct t_info
 {
     int				num_of_philos;
-    int				time_to_die;
-    int				time_to_eat;
-    int				time_to_sleep;
     int				num_of_meals;
     int				simul_flag;
     int             meals_flag;
-    size_t    		start_time;
+    time_t				time_to_die;
+    time_t				time_to_eat;
+    time_t				time_to_sleep;
+    time_t              start_time;
     struct t_philo  *philos;
     pthread_mutex_t *forks;
     pthread_mutex_t meals_mtx;
@@ -54,7 +54,7 @@ typedef struct t_philo
     pthread_t   ptid;
     int         id;
     int         meals_eaten;
-    size_t		last_meal_time;
+    time_t		last_meal_time;
     pthread_mutex_t meals_mtx;
     pthread_mutex_t time_mtx;
 } t_philo;
@@ -64,8 +64,10 @@ int     check_input(int ac, char **av, t_info *info);
 void    eat(t_philo *philo);
 void    philo_sleep(t_philo *philo);
 void    think(t_philo *philo);
-size_t   get_timestamp();
+time_t   get_timestamp();
 void    monitor(t_info *info);
 void    print_logs(size_t start_time, int id, char *s);
 void    ft_usleep(size_t usec);
+size_t get_microtime();
+void    release_forks(t_philo *philo);
 #endif
