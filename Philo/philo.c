@@ -60,15 +60,18 @@ void	*activity(void *arg)
 	philo = (t_philo *)arg;
 	while (!is_dead(philo->info))
 	{
-		pthread_mutex_lock(&philo->meals_mtx);
-		if (philo->info->num_of_meals && philo->meals_eaten >= philo->info->num_of_meals)
-		{
-			pthread_mutex_lock(&philo->info->simul_mtx);
-			philo->info->simul_flag = 1;
-			pthread_mutex_unlock(&philo->info->simul_mtx);
-			pthread_mutex_unlock(&philo->meals_mtx);
-			break ;
-		}
+        if (philo->info->num_of_meals)
+        {
+		    pthread_mutex_lock(&philo->meals_mtx);
+		    if (philo->info->num_of_meals && philo->meals_eaten >= philo->info->num_of_meals)
+		    {
+			    pthread_mutex_lock(&philo->info->simul_mtx);
+			    philo->info->simul_flag = 1;
+			    pthread_mutex_unlock(&philo->info->simul_mtx);
+		    	pthread_mutex_unlock(&philo->meals_mtx);
+			    break ;
+		    }
+        }
 		pthread_mutex_unlock(&philo->meals_mtx);
 		eat(philo);
 		philo_sleep(philo);
@@ -90,9 +93,6 @@ int main(int ac, char **av)
 	i = 0;
 	while (i < info.num_of_philos)
 	{
-        pthread_mutex_lock(&info.philos[i].time_mtx);
-        info.philos[i].last_meal_time = info.start_time;
-        pthread_mutex_unlock(&info.philos[i].time_mtx);
 		if (pthread_create(&info.philos[i].ptid, NULL,\
             activity, &info.philos[i]))
         	return (ft_clean(&info), 0);

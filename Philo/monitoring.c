@@ -21,7 +21,8 @@ int	check_death(t_info *info)
 	while (i < info->num_of_philos)
 	{
 		pthread_mutex_lock(&info->philos[i].time_mtx);
-		if (get_timestamp() - info->philos[i].last_meal_time >= info->time_to_die)
+		if (info->philos[i].last_meal_time &&
+		get_timestamp() - info->philos[i].last_meal_time >= info->time_to_die)
 		{
 			pthread_mutex_lock(&info->simul_mtx);
 			info->simul_flag = 1;
