@@ -70,4 +70,5 @@ void    print_logs(size_t start_time, int id, char *s);
 void    ft_usleep(size_t usec);
 size_t get_microtime();
 void    release_forks(t_philo *philo);
+int is_dead(t_info *info);
 #endif

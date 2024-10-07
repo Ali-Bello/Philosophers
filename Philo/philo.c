@@ -58,71 +58,25 @@ void	*activity(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (1)
+	while (!is_dead(philo->info))
 	{
-        pthread_mutex_lock(&philo->info->simul_mtx);
-		if (philo->info->simul_flag)
+		pthread_mutex_lock(&philo->meals_mtx);
+		if (philo->info->num_of_meals && philo->meals_eaten >= philo->info->num_of_meals)
 		{
-        	pthread_mutex_unlock(&philo->info->simul_mtx);
-			break;
+			pthread_mutex_lock(&philo->info->simul_mtx);
+			philo->info->simul_flag = 1;
+			pthread_mutex_unlock(&philo->info->simul_mtx);
+			pthread_mutex_unlock(&philo->meals_mtx);
+			break ;
 		}
-        pthread_mutex_unlock(&philo->info->simul_mtx);
+		pthread_mutex_unlock(&philo->meals_mtx);
 		eat(philo);
 		philo_sleep(philo);
 		print_logs(philo->info->start_time, philo->id, "is thinking");
-		usleep(15);
+		// usleep(15);
 	}
 	return (NULL);
 }
-
-
-int	check_death(t_info *info)
-{
-	int	i;
-
-	i = 0;
-	while (i < info->num_of_philos)
-	{
-		pthread_mutex_lock(&info->philos[i].time_mtx);
-		if (get_timestamp() - info->philos[i].last_meal_time > info->time_to_die)
-		{
-			pthread_mutex_lock(&info->simul_mtx);
-			info->simul_flag = 1;
-			pthread_mutex_unlock(&info->simul_mtx);
-			print_logs(info->start_time, i + 1, RED"died"RESET);
-			pthread_mutex_unlock(&info->philos[i].time_mtx);
-			return (1);
-		}
-		pthread_mutex_unlock(&info->philos[i].time_mtx);
-		i++;
-	}
-	return (0);
-}
-
-void	monitor(t_info *info)
-{
-	int	flag;
-
-	flag = 0;
-	while (1)
-	{
-		if (check_death(info))
-			break;
-		pthread_mutex_lock(&info->meals_mtx);
-		if (info->num_of_meals && info->meals_flag >= info->num_of_meals)
-		{
-			flag = 1;
-			pthread_mutex_lock(&info->simul_mtx);
-			info->simul_flag = 1;
-			pthread_mutex_unlock(&info->simul_mtx);
-		}
-		pthread_mutex_unlock(&info->meals_mtx);
-		if (flag)
-			break;
-		usleep(1000);
-	}
-}
-
 
 int main(int ac, char **av)
 {

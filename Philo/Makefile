@@ -4,7 +4,7 @@ CFLAGS = -Wall -Werror -Wextra -pthread #-fsanitize=thread -g3
 
 NAME = philo
 
-SRCS = parsing.c philo.c threads.c
+SRCS = parsing.c philo.c threads.c monitoring.c
 
 all: $(NAME)
 
