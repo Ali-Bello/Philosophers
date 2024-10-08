@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 21:40:00 by codespace         #+#    #+#             */
-/*   Updated: 2024/10/08 21:46:39 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/08 23:39:26 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ int	check_death(t_info *info)
 			info->simul_flag = 1;
 			pthread_mutex_unlock(&info->simul_mtx);
 			pthread_mutex_lock(&info->print_mtx);
-			printf("%ld %d %s\n", get_timestamp() - info->start_time, i + 1, \
-				RED "died" RESET);
+			printf("%ld %d %s\n", get_timestamp() - info->start_time, i + 1,
+				"died");
 			pthread_mutex_unlock(&info->print_mtx);
 			pthread_mutex_unlock(&info->philos[i].time_mtx);
 			return (1);
@@ -86,6 +86,19 @@ void	monitor(t_info *info)
 {
 	while (!is_dead(info))
 	{
+		if (info->num_of_philos == 1)
+		{
+			pthread_mutex_lock(&info->simul_mtx);
+			info->simul_flag = 1;
+			pthread_mutex_unlock(&info->forks[0]);
+			pthread_mutex_lock(&info->print_mtx);
+			ft_usleep(info->time_to_die - 1, NULL);
+			printf("%ld %d %s\n", get_timestamp() - info->start_time, 1,
+				"died");
+			pthread_mutex_unlock(&info->print_mtx);
+			pthread_mutex_unlock(&info->simul_mtx);
+			break ;
+		}
 		if (check_death(info) || meals_check(info))
 			break ;
 		ft_usleep(1, NULL);

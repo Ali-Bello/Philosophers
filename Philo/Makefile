@@ -17,24 +17,23 @@ END			:=	\033[0m
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) $(CFLAGS) -o $@
-	printf "$(ERASE)$(GREEN)--> $@ made <--$(END)\n"
+	@$(CC) $(OBJS) $(CFLAGS) -o $@
+	@printf "$(ERASE)$(GREEN)--> $@ made <--$(END)\n"
 
 $(OBJS_DIR)/%.o: %.c Makefile philo.h
-	mkdir -p $(OBJS_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-	printf "$(BLUE) > Compilation :$(END) $<\r"
-	sleep 0.2
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@printf "$(BLUE) > Compilation :$(END) $<\r"
+	@sleep 0.2
 
 clean:
-	printf "$(MAGENTA)-->	$(OBJS_DIR) removed$(END)\n"
-	rm -rdf $(OBJS_DIR)
+	@printf "$(MAGENTA)-->	$(OBJS_DIR) removed$(END)\n"
+	@rm -rdf $(OBJS_DIR)
 
 fclean: clean
-	printf "$(MAGENTA)-->	$(NAME) removed$(END)\n"
-	rm -f $(NAME)
+	@printf "$(MAGENTA)-->	$(NAME) removed$(END)\n"
+	@rm -f $(NAME)
 
 re: fclean all
 
 .PHONY:		all libft clean fclean re
-.SILENT:

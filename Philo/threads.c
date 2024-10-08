@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 03:08:33 by marvin            #+#    #+#             */
-/*   Updated: 2024/10/08 21:41:38 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/08 23:30:10 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void	pickup_forks(t_philo *philo)
 	}
 	pthread_mutex_lock(f1);
 	print_logs(philo->info, philo->id, "has taken a fork");
+	if (philo->info->num_of_philos == 1)
+		return ;
 	pthread_mutex_lock(f2);
 	print_logs(philo->info, philo->id, "has taken a fork");
 }
@@ -58,7 +60,8 @@ void	release_forks(t_philo *philo)
 void	eat(t_philo *philo)
 {
 	pickup_forks(philo);
-	print_logs(philo->info, philo->id, "is eating");
+	if (philo->info->num_of_philos != 1)
+		print_logs(philo->info, philo->id, "is eating");
 	pthread_mutex_lock(&philo->time_mtx);
 	philo->last_meal_time = get_timestamp();
 	pthread_mutex_unlock(&philo->time_mtx);

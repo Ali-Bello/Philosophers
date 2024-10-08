@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 02:56:02 by marvin            #+#    #+#             */
-/*   Updated: 2024/10/08 21:39:26 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/08 23:26:08 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	main(int ac, char **av)
 
 	memset(&info, 0, sizeof(t_info));
 	if (check_input(ac, av, &info) || init_objects(&info))
-		return (-1);
+		return (print_error(), -1);
 	info.start_time = get_timestamp();
 	i = 0;
 	while (i < info.num_of_philos)

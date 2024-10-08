@@ -6,11 +6,23 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 10:28:06 by aderraj           #+#    #+#             */
-/*   Updated: 2024/10/08 21:46:13 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/08 23:49:12 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	print_error(void)
+{
+	printf(RED "Error: INVALID ARGUMENTS\n" RESET);
+	printf(RED "USAGE: %s [num_of_philos]\
+	[time_to_die] [time_to_eat] [time_to_sleep]  %s\n" RESET,
+		BOLD GREEN "./philo" RESET YELLOW,
+		CYAN "[number_of_times_each_philosopher_must_eat]");
+	printf("%s  1st argument must be > 0\n",
+		YELLOW UNDERLINE "NOTE:" RESET ITALIC);
+	printf("       time_* arguments must be > 60\n"RESET);
+}
 
 int	ft_atoi(const char *str)
 {

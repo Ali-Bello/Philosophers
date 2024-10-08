@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 02:25:58 by aderraj           #+#    #+#             */
-/*   Updated: 2024/10/08 22:29:26 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/08 23:34:46 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 # define BOLD "\x1b[1m"
+# define ITALIC "\x1b[3m"
+# define UNDERLINE "\x1b[4m"
 
 typedef struct t_info
 {
@@ -66,6 +68,7 @@ void				eat(t_philo *philo);
 void				philo_sleep(t_philo *philo);
 void				monitor(t_info *info);
 void				print_logs(t_info *info, int id, char *s);
+void				print_error(void);
 void				ft_usleep(size_t usec, t_philo *philo);
 void				release_forks(t_philo *philo);
 #endif
