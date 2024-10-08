@@ -46,6 +46,7 @@ typedef struct t_info
     pthread_mutex_t *forks;
     pthread_mutex_t meals_mtx;
     pthread_mutex_t simul_mtx;
+    pthread_mutex_t print_mtx;
 } t_info;
 
 typedef struct t_philo
@@ -55,7 +56,6 @@ typedef struct t_philo
     int         id;
     int         meals_eaten;
     time_t		last_meal_time;
-    pthread_mutex_t meals_mtx;
     pthread_mutex_t time_mtx;
 } t_philo;
 
@@ -63,11 +63,11 @@ typedef struct t_philo
 time_t  get_timestamp();
 int     check_input(int ac, char **av, t_info *info);
 int     is_dead(t_info *info);
-int     meals_check(t_philo *philo);
+int     meals_check(t_info *info);
 void    eat(t_philo *philo);
 void    philo_sleep(t_philo *philo);
 void    monitor(t_info *info);
-void    print_logs(size_t start_time, int id, char *s);
+void    print_logs(t_info *info, int id, char *s);
 void    ft_usleep(size_t usec, t_philo *philo);
 void    release_forks(t_philo *philo);
 #endif

@@ -44,12 +44,12 @@ int init_objects(t_info *info)
         info->philos[i].info = info;
         info->philos[i].id = i + 1;
         pthread_mutex_init(&info->philos[i].time_mtx, NULL);
-        pthread_mutex_init(&info->philos[i].meals_mtx, NULL);
         pthread_mutex_init(&info->forks[i], NULL);
         i++;
     }
     pthread_mutex_init(&info->meals_mtx, NULL);
     pthread_mutex_init(&info->simul_mtx, NULL);
+    pthread_mutex_init(&info->print_mtx, NULL);
     return (0);
 }
 
@@ -60,11 +60,11 @@ void	*activity(void *arg)
 	philo = (t_philo *)arg;
 	while (!is_dead(philo->info))
 	{
-        if (philo->info->num_of_meals && meals_check(philo))
+        if (philo->info->num_of_meals && philo->meals_eaten == philo->info->num_of_meals)
             break ;
 		eat(philo);
 		philo_sleep(philo);
-		print_logs(philo->info->start_time, philo->id, "is thinking");
+		print_logs(philo->info, philo->id, "is thinking");
 		ft_usleep(1, philo);
 	}
 	return (NULL);
