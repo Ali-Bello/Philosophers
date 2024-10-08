@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 03:08:33 by marvin            #+#    #+#             */
-/*   Updated: 2024/10/08 23:30:10 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/08 23:58:40 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,18 @@ void	pickup_forks(t_philo *philo)
 	pthread_mutex_lock(f1);
 	print_logs(philo->info, philo->id, "has taken a fork");
 	if (philo->info->num_of_philos == 1)
+	{
+		pthread_mutex_unlock(f1);
 		return ;
+	}
 	pthread_mutex_lock(f2);
 	print_logs(philo->info, philo->id, "has taken a fork");
 }
 
 void	release_forks(t_philo *philo)
 {
+	if (philo->info->num_of_philos == 1)
+		return ;
 	if (philo->id % 2)
 	{
 		pthread_mutex_unlock(&philo->info->forks[philo->id - 1]);

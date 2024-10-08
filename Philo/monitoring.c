@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 21:40:00 by codespace         #+#    #+#             */
-/*   Updated: 2024/10/08 23:39:26 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/08 23:53:15 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ void	monitor(t_info *info)
 		{
 			pthread_mutex_lock(&info->simul_mtx);
 			info->simul_flag = 1;
-			pthread_mutex_unlock(&info->forks[0]);
 			pthread_mutex_lock(&info->print_mtx);
 			ft_usleep(info->time_to_die - 1, NULL);
 			printf("%ld %d %s\n", get_timestamp() - info->start_time, 1,
