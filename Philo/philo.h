@@ -3,25 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 02:25:58 by aderraj           #+#    #+#             */
-/*   Updated: 2024/10/05 03:52:07 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/08 21:44:32 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
-#define PHILO_H
+# define PHILO_H
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include <time.h>
-#include <sys/time.h>
-#include <limits.h>
-#include <stdatomic.h>
+# include <limits.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/time.h>
+# include <time.h>
+# include <unistd.h>
 
 # define RED "\x1b[31m"
 # define GREEN "\x1b[32m"
@@ -34,40 +33,39 @@
 
 typedef struct t_info
 {
-    int				num_of_philos;
-    int				num_of_meals;
-    int				simul_flag;
-    int             meals_flag;
-    time_t				time_to_die;
-    time_t				time_to_eat;
-    time_t				time_to_sleep;
-    time_t              start_time;
-    struct t_philo  *philos;
-    pthread_mutex_t *forks;
-    pthread_mutex_t meals_mtx;
-    pthread_mutex_t simul_mtx;
-    pthread_mutex_t print_mtx;
-} t_info;
+	int				num_of_philos;
+	int				num_of_meals;
+	int				simul_flag;
+	int				meals_flag;
+	time_t			time_to_die;
+	time_t			time_to_eat;
+	time_t			time_to_sleep;
+	time_t			start_time;
+	struct t_philo	*philos;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	meals_mtx;
+	pthread_mutex_t	simul_mtx;
+	pthread_mutex_t	print_mtx;
+}					t_info;
 
 typedef struct t_philo
 {
-    t_info      *info;
-    pthread_t   ptid;
-    int         id;
-    int         meals_eaten;
-    time_t		last_meal_time;
-    pthread_mutex_t time_mtx;
-} t_philo;
+	t_info			*info;
+	pthread_t		ptid;
+	int				id;
+	int				meals_eaten;
+	time_t			last_meal_time;
+	pthread_mutex_t	time_mtx;
+}					t_philo;
 
-
-time_t  get_timestamp();
-int     check_input(int ac, char **av, t_info *info);
-int     is_dead(t_info *info);
-int     meals_check(t_info *info);
-void    eat(t_philo *philo);
-void    philo_sleep(t_philo *philo);
-void    monitor(t_info *info);
-void    print_logs(t_info *info, int id, char *s);
-void    ft_usleep(size_t usec, t_philo *philo);
-void    release_forks(t_philo *philo);
+time_t				get_timestamp(void);
+int					check_input(int ac, char **av, t_info *info);
+int					is_dead(t_info *info);
+int					meals_check(t_info *info);
+void				eat(t_philo *philo);
+void				philo_sleep(t_philo *philo);
+void				monitor(t_info *info);
+void				print_logs(t_info *info, int id, char *s);
+void				ft_usleep(size_t usec, t_philo *philo);
+void				release_forks(t_philo *philo);
 #endif
