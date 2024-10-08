@@ -60,15 +60,14 @@ typedef struct t_philo
 } t_philo;
 
 
+time_t  get_timestamp();
 int     check_input(int ac, char **av, t_info *info);
+int     is_dead(t_info *info);
+int     meals_check(t_philo *philo);
 void    eat(t_philo *philo);
 void    philo_sleep(t_philo *philo);
-void    think(t_philo *philo);
-time_t   get_timestamp();
 void    monitor(t_info *info);
 void    print_logs(size_t start_time, int id, char *s);
-void    ft_usleep(size_t usec);
-size_t get_microtime();
+void    ft_usleep(size_t usec, t_philo *philo);
 void    release_forks(t_philo *philo);
-int is_dead(t_info *info);
 #endif

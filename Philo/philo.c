@@ -60,23 +60,12 @@ void	*activity(void *arg)
 	philo = (t_philo *)arg;
 	while (!is_dead(philo->info))
 	{
-        if (philo->info->num_of_meals)
-        {
-		    pthread_mutex_lock(&philo->meals_mtx);
-		    if (philo->info->num_of_meals && philo->meals_eaten > philo->info->num_of_meals)
-		    {
-			    pthread_mutex_lock(&philo->info->simul_mtx);
-			    philo->info->simul_flag = 1;
-			    pthread_mutex_unlock(&philo->info->simul_mtx);
-		    	pthread_mutex_unlock(&philo->meals_mtx);
-			    break ;
-		    }
-		    pthread_mutex_unlock(&philo->meals_mtx);
-        }
+        if (philo->info->num_of_meals && meals_check(philo))
+            break ;
 		eat(philo);
 		philo_sleep(philo);
 		print_logs(philo->info->start_time, philo->id, "is thinking");
-		ft_usleep(1);
+		ft_usleep(1, philo);
 	}
 	return (NULL);
 }
@@ -88,7 +77,7 @@ int main(int ac, char **av)
 
     memset(&info, 0, sizeof(t_info));
     if (check_input(ac, av, &info) || init_objects(&info))
-        return (0);
+        return (-1);
     info.start_time = get_timestamp();
 	i = 0;
 	while (i < info.num_of_philos)
@@ -96,7 +85,7 @@ int main(int ac, char **av)
 		if (pthread_create(&info.philos[i].ptid, NULL,\
             activity, &info.philos[i]))
         	return (ft_clean(&info), 0);
-		usleep(50);
+		ft_usleep(1, NULL);
 		i++;
 	}
     monitor(&info);

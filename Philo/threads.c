@@ -12,13 +12,17 @@
 
 #include "philo.h"
 
-void ft_usleep(size_t usec)
+void ft_usleep(size_t usec, t_philo *philo)
 {
     size_t  start;
 
     start  = get_timestamp();
     while ((get_timestamp() - start) < usec)
-     usleep(100);
+    {
+        if (philo && is_dead(philo->info))
+            return ;
+        usleep(100);
+    }
 }
 
 void    print_logs(size_t start_time, int id, char *s)
@@ -31,6 +35,7 @@ void    pickup_forks(t_philo *philo)
     pthread_mutex_t *f1;
     pthread_mutex_t *f2;
 
+
     f1 = &philo->info->forks[philo->id - 1];
     f2 = &philo->info->forks[philo->id % philo->info->num_of_philos];
     if (philo->id % 2)
@@ -40,14 +45,6 @@ void    pickup_forks(t_philo *philo)
     }
     pthread_mutex_lock(f1);
     print_logs(philo->info->start_time, philo->id, "has taken a fork");
-    pthread_mutex_lock(&philo->info->simul_mtx);
-    if (philo->info->simul_flag)
-    {
-        pthread_mutex_unlock(f1);
-        pthread_mutex_unlock(&philo->info->simul_mtx);
-        return ;
-    }
-    pthread_mutex_unlock(&philo->info->simul_mtx);
     pthread_mutex_lock(f2);
     print_logs(philo->info->start_time, philo->id, "has taken a fork");
 }
@@ -68,14 +65,12 @@ void    release_forks(t_philo *philo)
 
 void    eat(t_philo *philo)
 {
-    if (is_dead(philo->info))
-        return ;
     pickup_forks(philo);
     print_logs(philo->info->start_time, philo->id, "is eating");
     pthread_mutex_lock(&philo->time_mtx);
     philo->last_meal_time = get_timestamp();
 	pthread_mutex_unlock(&philo->time_mtx);
-    ft_usleep(philo->info->time_to_eat);
+    ft_usleep(philo->info->time_to_eat, philo);
 
     pthread_mutex_lock(&philo->meals_mtx);
     philo->meals_eaten++;
@@ -93,5 +88,5 @@ void    eat(t_philo *philo)
 void    philo_sleep(t_philo *philo)
 {
     print_logs(philo->info->start_time, philo->id, "is sleeping");
-    ft_usleep(philo->info->time_to_sleep);
+    ft_usleep(philo->info->time_to_sleep, philo);
 }
