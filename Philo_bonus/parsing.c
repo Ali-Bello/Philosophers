@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 04:59:16 by codespace         #+#    #+#             */
-/*   Updated: 2024/10/27 05:22:17 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/31 15:44:29 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 void	print_error(void)
 {
 	printf(RED "Error: INVALID ARGUMENTS\n" RESET);
-	printf(RED "USAGE: %s [num_of_philos]\
+	printf(RED "USAGE: %s [num_of_philos] \
 	[time_to_die] [time_to_eat] [time_to_sleep]  %s\n" RESET,
 		BOLD GREEN "./philo" RESET YELLOW,
 		CYAN "[number_of_times_each_philosopher_must_eat]");
 	printf("%s  1st argument must be > 0\n",
 		YELLOW UNDERLINE "NOTE:" RESET ITALIC);
-	printf("       time_* arguments must be > 60\n"RESET);
+	printf("       time_* arguments must be > 60\n" RESET);
 }
 
 int	ft_atoi(const char *str)

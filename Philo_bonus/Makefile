@@ -1,7 +1,7 @@
 CC = cc 
 CFLAGS = -Wall -Werror -Wextra -pthread #-fsanitize=thread -g3
 NAME = philo_bonus
-SRCS = parsing.c philo_bonus.c processes.c monitoring.c utils.c
+SRCS = parsing.c monitoring.c processes.c utils.c utils_2.c philo_bonus.c
 OBJS_DIR = objs
 OBJS = $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
 

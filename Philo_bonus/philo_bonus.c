@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 04:59:11 by codespace         #+#    #+#             */
-/*   Updated: 2024/10/29 14:51:02 by codespace        ###   ########.fr       */
+/*   Updated: 2024/10/31 15:42:05 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,22 @@
 
 void	ft_clean(t_info *info)
 {
-	if (info->philos)
-		free(info->philos);
+	int	i;
+
+	i = 0;
+	while (i < info->num_of_philos)
+	{
+		sem_close(info->philos[i].death_sem);
+		sem_close(info->philos[i].time_lock);
+		i++;
+	}
+	free(info->philos);
+	if (info->forks)
+		sem_close(info->forks);
+	if (info->max_philos)
+		sem_close(info->max_philos);
+	if (info->write_sem)
+		sem_close(info->write_sem);
 	memset(info, 0, sizeof(t_info));
 }
 
@@ -24,14 +38,14 @@ int	init_objects(t_info *info)
 	int	i;
 
 	info->philos = malloc(sizeof(t_philo) * info->num_of_philos);
-	info->forks = malloc(sizeof(sem_t) * info->num_of_philos);
-	if (!info->philos || !info->forks)
+	info->forks = NULL;
+	if (!info->philos)
 		return (ft_clean(info), 1);
 	i = 0;
 	while (i < info->num_of_philos)
 	{
 		memset(&info->philos[i], 0, sizeof(t_philo));
-		if (init_time_sem(&info->philos[i]))
+		if (init_philo_sem(&info->philos[i]))
 			return (ft_clean(info), -1);
 		info->philos[i].info = info;
 		info->philos[i].id = i + 1;
@@ -54,16 +68,15 @@ int	main(int ac, char **av)
 	info.start_time = get_timestamp();
 	while (i < info.num_of_philos)
 	{
-        info.philos[i].pid = fork();
-        if (info.philos[i].pid < 0)
+		info.philos[i].pid = fork();
+		if (info.philos[i].pid < 0)
 			return (ft_clean(&info), 0);
-        else if (info.philos[i].pid == 0)
-            return (activity(&info.philos[i]));
-		ft_usleep(1);
+		else if (info.philos[i].pid == 0)
+			return (activity(&info.philos[i]));
+		ft_usleep(1, NULL);
 		i++;
 	}
 	i = 0;
 	table_monitor(&info);
-	ft_clean(&info);
 	return (0);
 }
